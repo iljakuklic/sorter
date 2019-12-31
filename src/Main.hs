@@ -5,9 +5,7 @@
 module Main(main) where
 
 import Sorter
-import SortAlgo.BubbleSort
-import SortAlgo.SelectSort
-import SortAlgo.QuickSort
+import SortAlgo
 
 import qualified Graphics.Gloss as G
 import           System.Random

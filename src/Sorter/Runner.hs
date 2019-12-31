@@ -2,7 +2,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GADTs #-}
 
-module Sorter.SorterImpl(runSort) where
+module Sorter.Runner(runSort) where
 
 import Sorter.Spec
 
