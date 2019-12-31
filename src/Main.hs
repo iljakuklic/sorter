@@ -16,7 +16,7 @@ makeSorter opts beg end = do
     fix mainSorter beg end
     when (bubbleSize > 0) $ fix bubbleSort beg end
   where
-    sizeOpt get = Idx (fromIntegral (maybe 0 CL.getSize (get opts)))
+    sizeOpt get = Idx (maybe 0 CL.getSize (get opts))
     selectSize = sizeOpt CL.selectSortUpto
     bubbleSize = sizeOpt CL.bubbleThreshold
     smallSpecSorter = if CL.smallOpt opts then smallSort else id
@@ -31,6 +31,8 @@ makeSorter opts beg end = do
 main :: IO ()
 main = do
     opts <- CL.getOptions
-    randomRIO (30, 50)
-         >>= flip replicateM (randomRIO (10, 300))
-         >>= animateInWindow (900, 600) (makeSorter opts)
+    size <- case CL.size opts of
+        Nothing -> randomRIO (30, 100)
+        Just s -> return (CL.getSize s)
+    replicateM size (randomRIO (10, 300))
+        >>= animateInWindow (900, 600) (makeSorter opts)

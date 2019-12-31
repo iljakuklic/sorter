@@ -8,14 +8,17 @@
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module CmdLine(Algorithm(..), Size(..),
+module CmdLine(Algorithm(..), Size, getSize,
                OptionsW(..), Options, getOptions) where
 
 import           Numeric.Natural
 import           Options.Generic
 
 -- To represent sizes of things with nice metavar.
-newtype Size = Size { getSize :: Natural } deriving (Read, Generic)
+newtype Size = Size Natural deriving (Read, Generic)
+
+getSize :: Size -> Int
+getSize (Size s) = fromIntegral s
 
 instance ParseField Size where
     readField = fmap Size readField
@@ -46,6 +49,8 @@ data OptionsW w = Options {
         <?> "Use specialized sort for small arrays",
     bubbleThreshold :: w ::: Maybe Size
         <?> "Switch to bubble sort when all partitions are at most this large",
+    size :: w ::: Maybe Size
+        <?> "Generated input array size",
     algo :: w ::: Algorithm
         <?> "Sorting algorithm to use"
   } deriving (Generic)
