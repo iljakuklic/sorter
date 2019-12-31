@@ -16,8 +16,8 @@ import Data.Function
 
 -- Dynamically select sorting algorithm depending on array size.
 ifSize :: (Idx -> Bool) -> SortAlgo -> SortAlgo -> SortAlgo
-ifSize pred thenSorter elseSorter beg end =
-    if pred (rangeSize beg end)
+ifSize cond thenSorter elseSorter beg end =
+    if cond (rangeSize beg end)
         then thenSorter beg end
         else elseSorter beg end
 
