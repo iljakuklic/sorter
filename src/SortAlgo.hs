@@ -1,3 +1,4 @@
+-- Re-export various sorting algorithms.
 
 module SortAlgo(module SortAlgo.BubbleSort,
                 module SortAlgo.SelectSort,

@@ -11,6 +11,7 @@ findMinIdx cur beg end = do
     r <- cmpAt cur beg
     findMinIdx (if r == GT then beg else cur) (beg + 1) end
 
+-- A simple selection sort.
 selectSort :: SortAlgo
 selectSort beg end = do
     for_ [beg..end] $ \i -> do
