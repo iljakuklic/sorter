@@ -18,8 +18,10 @@ partition i j piv = do
 
 -- Quick sort.
 quickSort :: OpenSortAlgo
-quickSort _rec beg end | beg >= end = return ()
-quickSort _rec beg end | beg + 1 == end = sort2 beg (beg + 1) >> return ()
+quickSort _rec beg end | rangeSize beg end < 2 =
+    return ()
+quickSort _rec beg end | rangeSize beg end == 2 =
+    sort2 beg (beg + 1) >> return ()
 quickSort rec beg end = do
     mid <- partition beg beg end
     rec beg (mid - 1)

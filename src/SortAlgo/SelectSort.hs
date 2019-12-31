@@ -13,7 +13,7 @@ findMinIdx cur beg end = do
 
 -- A simple selection sort.
 selectSort :: OpenSortAlgo
-selectSort _rec beg end | beg >= end = return ()
+selectSort _rec beg end | rangeSize beg end < 2 = return ()
 selectSort rec beg end = do
     minIdx <- findMinIdx beg (succ beg) end
     when (minIdx /= beg) $ do

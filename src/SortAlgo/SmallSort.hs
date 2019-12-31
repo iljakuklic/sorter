@@ -46,7 +46,7 @@ sort6 i0 i1 i2 i3 i4 i5 = do
 -- Not capable of processing any bigger sizes, be careful.
 smallSort :: SA.OpenSortAlgo
 smallSort rec i end =
-    case end - i + 1 of
+    case SA.rangeSize i end of
         0 -> return ()
         1 -> return ()
         2 -> sort2 (i+0) (i+1)
