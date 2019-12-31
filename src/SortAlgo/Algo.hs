@@ -2,12 +2,16 @@
 
 {-# LANGUAGE LambdaCase #-}
 
-module SortAlgo.Algo(module Sorter.Spec, SortAlgo, sort2) where
+module SortAlgo.Algo(module Sorter.Spec, OpenSortAlgo, SortAlgo,
+                     sort2) where
 
 import Sorter.Spec
 
 -- Sort algorithm takes array bounds and produces a sorter.
 type SortAlgo = Idx -> Idx -> Sorter ()
+
+-- Sorting algorithm with open recursion for greater flexibility.
+type OpenSortAlgo = SortAlgo -> SortAlgo
 
 -- Sort elements on two indices i, j.
 -- Returns whether the elements have been swapped.

@@ -17,10 +17,10 @@ partition i j piv = do
         _ -> partition i (j + 1) piv
 
 -- Quick sort.
-quickSort :: SortAlgo
-quickSort beg end | beg >= end = return ()
-quickSort beg end | beg + 1 == end = sort2 beg (beg + 1) >> return ()
-quickSort beg end = do
+quickSort :: OpenSortAlgo
+quickSort _rec beg end | beg >= end = return ()
+quickSort _rec beg end | beg + 1 == end = sort2 beg (beg + 1) >> return ()
+quickSort rec beg end = do
     mid <- partition beg beg end
-    quickSort beg (mid - 1)
-    quickSort (mid + 1) end
+    rec beg (mid - 1)
+    rec (mid + 1) end

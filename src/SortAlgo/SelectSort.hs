@@ -12,9 +12,10 @@ findMinIdx cur beg end = do
     findMinIdx (if r == GT then beg else cur) (beg + 1) end
 
 -- A simple selection sort.
-selectSort :: SortAlgo
-selectSort beg end = do
-    for_ [beg..end] $ \i -> do
-        minIdx <- findMinIdx i (succ i) end
-        when (minIdx /= i) $ do
-            swapAt i minIdx
+selectSort :: OpenSortAlgo
+selectSort _rec beg end | beg >= end = return ()
+selectSort rec beg end = do
+    minIdx <- findMinIdx beg (succ beg) end
+    when (minIdx /= beg) $ do
+        swapAt beg minIdx
+    rec (beg + 1) end

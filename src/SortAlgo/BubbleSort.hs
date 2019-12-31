@@ -15,13 +15,11 @@ bubbleSortSimple beg end = do
 
 -- Bubble sort with a bit more sophisticated way of determining
 -- what part of the array shall be processed in each pass.
-bubbleSort :: SortAlgo
-bubbleSort beg end' = go (end' - 1)
-  where
-    go end = do
-        Last ii <- flip foldMap [beg..end] $ \i -> do
-            sw <- sort2 i (i + 1)
-            return (Last (if sw then Just i else Nothing))
-        case ii of
-            Just sw -> go (sw - 1)
-            Nothing -> return ()
+bubbleSort :: OpenSortAlgo
+bubbleSort rec beg end = do
+    Last ii <- flip foldMap [beg..(end - 1)] $ \i -> do
+        sw <- sort2 i (i + 1)
+        return (Last (if sw then Just i else Nothing))
+    case ii of
+        Just sw -> rec beg sw
+        Nothing -> return ()
