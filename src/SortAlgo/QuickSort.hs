@@ -5,9 +5,6 @@ module SortAlgo.QuickSort(quickSort) where
 
 import SortAlgo.Algo
 
-import Control.Monad
-import Data.Foldable
-
 -- Lomuto partition scheme. Returns the final index of the pivot.
 partition :: Idx -> Idx -> Idx -> Sorter Idx
 partition i j piv | j >= piv = swapAt i piv >> return i

@@ -3,9 +3,9 @@ module SortAlgo.SelectSort(selectSort) where
 
 import SortAlgo.Algo
 
-import Control.Monad
-import Data.Foldable
+import Control.Monad (when)
 
+findMinIdx :: Idx -> Idx -> Idx -> Sorter Idx
 findMinIdx cur beg end | beg > end = return cur
 findMinIdx cur beg end = do
     r <- cmpAt cur beg

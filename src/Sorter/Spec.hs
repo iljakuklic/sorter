@@ -74,11 +74,17 @@ act :: Action a -> Sorter a
 act a = SBind a SPure
 
 -- Conveient action wrappers for specifying algorithms.
+
+peekAt :: Idx -> Sorter Int
 peekAt i = act (PeekAt i)
+
+cmpAt :: Idx -> Idx -> Sorter Ordering
 cmpAt i j = act (CmpAt i j)
+
+swapAt :: Idx -> Idx -> Sorter ()
 swapAt i j = when (i /= j) $ act (SwapAt i j)
 
 -- Run sorter in given monad by providing a handler for individual actions.
 runSorter :: Monad m => (forall b . Action b -> m b) -> Sorter a -> m a
-runSorter h (SPure x) = return x
+runSorter _ (SPure x) = return x
 runSorter h (SBind a f) = h a >>= runSorter h . f

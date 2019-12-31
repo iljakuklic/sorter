@@ -57,6 +57,7 @@ data AnimState = AnimState {
   }
 
 -- Select color, highlighting bars listed in idxs.
+highlight :: [Idx] -> Idx -> G.Color
 highlight idxs idx = if idx `elem` idxs then G.red else G.orange
 
 -- Draw bars, highlighting bars at specified indices.
@@ -66,7 +67,7 @@ drawBarsWithHighlight ord vals hlx
 
 -- Draw the current animation frame.
 drawState :: [Int] -> AnimState -> G.Picture
-drawState vals ste@(AnimState to ord (AnAction (SwapAt i j) : _)) = bars
+drawState vals (AnimState to ord (AnAction (SwapAt i j) : _)) = bars
   where
     -- Bars to draw. The bars currently being swapped go last because we want
     -- them to be drawn at foreground.
@@ -95,6 +96,7 @@ actionDuration (AnAction (SwapAt i j)) = 0.1 * (max 3 (min dist 10))
   where dist = abs (fromIntegral j - fromIntegral i) :: Float
 actionDuration (AnAction (CmpAt _ _)) = 0.1
 
+progressIn :: AnAction -> Float -> Float
 progressIn a dt = dt / actionDuration a
 
 -- Update the animation state.
@@ -102,12 +104,13 @@ tick :: Float -> AnimState -> AnimState
 tick _dt ste@(AnimState _ _ []) = ste
 tick dt ste@(AnimState _ _ (a:acts)) | actionDuration a <= 0.0
   = tick dt (ste { asActions = acts })
-tick dt ste@(AnimState p ord (a:acts)) | progressIn a dt < p
+tick dt ste@(AnimState p _ord (a:_)) | progressIn a dt < p
   = ste { asCountdown = asCountdown ste - progressIn a dt }
-tick dt ste@(AnimState p ord (a:acts))
+tick _dt (AnimState _p ord (a:acts))
   = AnimState 1.0 (updateOrder a ord) acts
 
 -- Run animation in a window.
+animateInWindow :: (Int, Int) -> (Idx -> Idx -> Sorter a) -> [Int] -> IO ()
 animateInWindow winSize@(wsx, wsy) sortAlgo elts = do
     let ary = listArray (Idx 0, Idx (length elts - 1)) elts :: UArray Idx Int
     let (_, _, acts) = runSort sortAlgo ary

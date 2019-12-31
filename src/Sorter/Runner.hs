@@ -12,7 +12,6 @@ import Data.Array.Unboxed
 import Data.Array.ST
 import Control.Applicative
 import Control.Monad.ST
-import Control.Monad
 import Control.Monad.Trans
 import Control.Monad.RWS
 
@@ -51,8 +50,8 @@ runSort sorter inAry = runST $ do
     (lo, hi) <- getBounds ary
     -- Run the sortin algo in RWS monad.
     let sorting = runSorter handleAndLogAction (sorter lo hi)
-    (res, log) <- evalRWST sorting ary ()
+    (res, actions) <- evalRWST sorting ary ()
     -- Get the resulting array
     outAry <- freeze ary
     -- Return sorter result, the final array, and the action log.
-    return (res, outAry, log)
+    return (res, outAry, actions)

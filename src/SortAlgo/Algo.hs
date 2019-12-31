@@ -21,6 +21,7 @@ rangeSize beg end = end - beg + 1
 
 -- Sort elements on two indices i, j.
 -- Returns whether the elements have been swapped.
+sort2 :: Idx -> Idx -> Sorter Bool
 sort2 i j = do
     cmpAt i j >>= \case
         GT -> swapAt i j >> return True

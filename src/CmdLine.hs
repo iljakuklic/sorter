@@ -12,7 +12,6 @@ module CmdLine(Algorithm(..), Size(..),
                OptionsW(..), Options, getOptions) where
 
 import           Numeric.Natural
-import qualified Options.Applicative as O
 import           Options.Generic
 
 -- List of available sorting algorithms.
