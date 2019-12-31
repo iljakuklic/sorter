@@ -2,10 +2,12 @@
 
 {-# LANGUAGE GADTs #-}
 
-module Sorter.Animate(AnimState(..), draw, tick) where
+module Sorter.Animate(animateInWindow) where
 
 import Sorter.Spec
+import Sorter.Runner
 
+import           Data.Array.Base
 import qualified Data.List as L
 import qualified Graphics.Gloss as G
 
@@ -104,3 +106,16 @@ tick dt ste@(AnimState p ord (a:acts)) | progressIn a dt < p
   = ste { asCountdown = asCountdown ste - progressIn a dt }
 tick dt ste@(AnimState p ord (a:acts))
   = AnimState 1.0 (updateOrder a ord) acts
+
+-- Run animation in a window.
+animateInWindow winSize@(wsx, wsy) sortAlgo elts = do
+    let ary = listArray (Idx 0, Idx (length elts - 1)) elts :: UArray Idx Int
+    let (_, _, acts) = runSort sortAlgo ary
+    let win = G.InWindow "Sorter" winSize (50, 50)
+    let initSte = AnimState {
+        asCountdown = 1.0,
+        asOrder = take (length elts) [0..],
+        asActions = acts
+      }
+    let run = G.simulate win (G.greyN 0.15) 50
+    run initSte (draw (fromIntegral wsx, fromIntegral wsy) elts) (const tick)
