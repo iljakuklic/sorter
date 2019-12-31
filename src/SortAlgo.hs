@@ -12,7 +12,7 @@ import SortAlgo.BubbleSort
 import SortAlgo.SelectSort
 import SortAlgo.QuickSort
 import SortAlgo.SmallSort
-import Data.Function
+import Data.Function (fix)
 
 -- Dynamically select sorting algorithm depending on array size.
 ifSize :: (Idx -> Bool) -> SortAlgo -> SortAlgo -> SortAlgo
