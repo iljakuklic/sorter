@@ -14,6 +14,14 @@ module CmdLine(Algorithm(..), Size(..),
 import           Numeric.Natural
 import           Options.Generic
 
+-- To represent sizes of things with nice metavar.
+newtype Size = Size { getSize :: Natural } deriving (Read, Generic)
+
+instance ParseField Size where
+    readField = fmap Size readField
+instance ParseRecord Size
+instance ParseFields Size
+
 -- List of available sorting algorithms.
 data Algorithm
     = Bubble
@@ -30,18 +38,14 @@ instance ParseField Algorithm where
 instance ParseRecord Algorithm
 instance ParseFields Algorithm
 
--- To represent sizes of things with nice metavar.
-newtype Size = Size { getSize :: Natural } deriving (Generic)
-
-instance ParseField Size where
-    readField = fmap Size readField
-
 -- Command line options.
 data OptionsW w = Options {
     selectSortUpto :: w ::: Maybe Size
         <?> "Use select sort for smaller sizes",
     smallOpt :: w ::: Bool
         <?> "Use specialized sort for small arrays",
+    bubbleThreshold :: w ::: Maybe Size
+        <?> "Switch to bubble sort when all partitions are at most this large",
     algo :: w ::: Algorithm
         <?> "Sorting algorithm to use"
   } deriving (Generic)
