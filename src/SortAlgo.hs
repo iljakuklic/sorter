@@ -3,6 +3,7 @@
 module SortAlgo(module SortAlgo.BubbleSort,
                 module SortAlgo.SelectSort,
                 module SortAlgo.QuickSort,
+                module SortAlgo.SmallSort,
                 SortAlgo, OpenSortAlgo,
                 fix, ifSize, noSort) where
 
@@ -10,6 +11,7 @@ import SortAlgo.Algo
 import SortAlgo.BubbleSort
 import SortAlgo.SelectSort
 import SortAlgo.QuickSort
+import SortAlgo.SmallSort
 import Data.Function
 
 -- Dynamically select sorting algorithm depending on array size.
@@ -21,4 +23,4 @@ ifSize pred thenSorter elseSorter beg end =
 
 -- Trivial sorting algorithm that does not sort anything.
 noSort :: SortAlgo
-noSort _ _ = return ()
+noSort _beg _end = return ()

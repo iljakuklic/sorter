@@ -25,6 +25,7 @@ executable sorter
                        SortAlgo.Algo,
                        SortAlgo.BubbleSort,
                        SortAlgo.SelectSort,
+                       SortAlgo.SmallSort,
                        SortAlgo.QuickSort
   build-depends:       base >= 4.7 && < 5,
                        array >= 0.5 && < 1,
