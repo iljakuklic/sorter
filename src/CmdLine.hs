@@ -43,21 +43,26 @@ instance ParseFields Algorithm
 
 -- Command line options.
 data OptionsW w = Options {
+    -- Options specifying the initial array
     arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
+    nearlySorted :: w ::: Bool
+        <?> "Generate an array thet is already almost sorted",
+    -- Options for specifying the sorting algorithm
     smallOpt :: w ::: Bool
         <?> "Use specialized sort for small arrays",
     selectSortUpto :: w ::: Maybe Size
         <?> "Use select sort for smaller sizes",
     bubbleThreshold :: w ::: Maybe Size
         <?> "Switch to bubble sort when all partitions are at most this large",
-    algo :: w ::: Algorithm
+    algorithm :: w ::: Algorithm
         <?> "Sorting algorithm to use"
   } deriving (Generic)
 
 optionModifiers :: Modifiers
 optionModifiers = lispCaseModifiers { shortNameModifier = short }
   where
+    short "algorithm" = Just 'a'
     short "arraySize" = Just 's'
     short _ = Nothing
 

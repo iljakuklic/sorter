@@ -11,6 +11,7 @@ import qualified CmdLine as CL
 import           System.Random
 import           Control.Monad
 
+-- Build a sorting procedure as specified by command line options.
 makeSorter :: CL.Options -> SortAlgo
 makeSorter opts beg end = do
     fix mainSorter beg end
@@ -22,10 +23,10 @@ makeSorter opts beg end = do
     smallSpecSorter = if CL.smallOpt opts then smallSort else id
     smallSelectSorter = ifSize (<= selectSize) (fix selectSort)
     smallSorter = smallSelectSorter . smallSpecSorter
-    baseSorter = case CL.algo opts of
-      CL.Select -> selectSort
-      CL.Bubble -> bubbleSort
-      CL.Quick -> quickSort
+    baseSorter = case CL.algorithm opts of
+        CL.Select -> selectSort
+        CL.Bubble -> bubbleSort
+        CL.Quick -> quickSort
     mainSorter = baseSorter . smallSorter . ifSize (<= bubbleSize) noSort
 
 main :: IO ()
@@ -34,5 +35,9 @@ main = do
     size <- case CL.arraySize opts of
         Nothing -> randomRIO (30, 100)
         Just s -> return (CL.getSize s)
-    initArray <- replicateM size (randomRIO (10, 300))
+    initArray <-
+        if CL.nearlySorted opts
+            then fmap (map (max 10) . scanl (+) 30)
+                     (replicateM size (randomRIO (-5, 10)))
+            else replicateM size (randomRIO (10, 300))
     animateInWindow (900, 600) (makeSorter opts) initArray
