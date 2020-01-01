@@ -43,14 +43,14 @@ instance ParseFields Algorithm
 
 -- Command line options.
 data OptionsW w = Options {
-    selectSortUpto :: w ::: Maybe Size
-        <?> "Use select sort for smaller sizes",
-    smallOpt :: w ::: Bool
-        <?> "Use specialized sort for small arrays",
-    bubbleThreshold :: w ::: Maybe Size
-        <?> "Switch to bubble sort when all partitions are at most this large",
     arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
+    smallOpt :: w ::: Bool
+        <?> "Use specialized sort for small arrays",
+    selectSortUpto :: w ::: Maybe Size
+        <?> "Use select sort for smaller sizes",
+    bubbleThreshold :: w ::: Maybe Size
+        <?> "Switch to bubble sort when all partitions are at most this large",
     algo :: w ::: Algorithm
         <?> "Sorting algorithm to use"
   } deriving (Generic)
