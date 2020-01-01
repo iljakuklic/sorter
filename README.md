@@ -176,6 +176,6 @@ Random ideas, in no particular order.
 * More options to generate the input
 * Split into library and executable packages
   * Convert comments to proper haddock docs
-* Sorter to use final tagless representation
+* Sorter to use final encoding
 * Allow colours and animation speed to be adjusted
 * Allow window (and GIF) size to be adjusted
