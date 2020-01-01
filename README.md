@@ -1,6 +1,8 @@
 # Sorter
 
 Visualizer for all sorts of sorting algorithms written in Haskell.
+It uses some interesting implementation techniques detailed further
+in the [implementation notes](#implementation-notes) section.
 
 ## Setup
 
@@ -22,6 +24,8 @@ To check the command line help message:
 ```
 
 ## Examples
+
+Some generated animations with corresponding command lines.
 
 #### Select sort
 
@@ -48,6 +52,18 @@ To check the command line help message:
 ```
 
 ## Implementation notes
+
+The implementation of the sorting-algoritm-independent part of the
+visualizer consists of three main components. The algorithms themselves
+cand be considered to be the fourth component.
+
+### The `Sorter` type
+
+### Sort runner
+
+### The animator
+
+### Sorting algorithms
 
 ## TODO
 
