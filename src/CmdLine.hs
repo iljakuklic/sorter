@@ -67,7 +67,7 @@ data OptionsW w = Options {
     arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
     nearlySorted :: w ::: Bool
-        <?> "Generate an array thet is already almost sorted",
+        <?> "Generate an array that is already almost sorted",
     reverse :: w ::: Bool
         <?> "Reverse the array before sorting",
     -- Options for specifying output format
