@@ -37,7 +37,7 @@ main = do
         Just s -> return (CL.getSize s)
     initArray <-
         if CL.nearlySorted opts
-            then fmap (map (max 10) . scanl (+) 30)
+            then fmap (map (max 10) . drop 1 . scanl (+) 30)
                      (replicateM size (randomRIO (-5, 10)))
             else replicateM size (randomRIO (10, 300))
     let sorter = makeSorter opts
