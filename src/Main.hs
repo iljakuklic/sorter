@@ -31,8 +31,8 @@ makeSorter opts beg end = do
 main :: IO ()
 main = do
     opts <- CL.getOptions
-    size <- case CL.size opts of
+    size <- case CL.arraySize opts of
         Nothing -> randomRIO (30, 100)
         Just s -> return (CL.getSize s)
-    replicateM size (randomRIO (10, 300))
-        >>= animateInWindow (900, 600) (makeSorter opts)
+    initArray <- replicateM size (randomRIO (10, 300))
+    animateInWindow (900, 600) (makeSorter opts) initArray

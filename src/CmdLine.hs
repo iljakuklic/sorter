@@ -49,7 +49,7 @@ data OptionsW w = Options {
         <?> "Use specialized sort for small arrays",
     bubbleThreshold :: w ::: Maybe Size
         <?> "Switch to bubble sort when all partitions are at most this large",
-    size :: w ::: Maybe Size
+    arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
     algo :: w ::: Algorithm
         <?> "Sorting algorithm to use"
