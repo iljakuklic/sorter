@@ -64,7 +64,7 @@ It represents the sorting algorithm. All sorting algorithms are
 implemented in terms of this type. `Sorter` is a monad so we can
 chain steps of the sorting algorithm and let subsequent steps depend
 on results of already performed steps. The `Sorter` provides a number
-of actions, for example:
+of basic actions, for example:
 
 ```haskell
 -- Compare values at two indices
@@ -102,6 +102,16 @@ bubbleSort begin end =
 ```
 
 ### Sort runner and the animator
+
+The `Sorter` type is a free-monad-style type. Several interpretations
+are possible. The `Sorter.Runner` component provides the canonical
+interpretation. It keeps track of the contents of the array being sorted
+and performs updates to it based on requested actions. In addition to that,
+it records all the actions performed during the run of the algorithm
+in a log.
+
+Subsequently, the `Sorter.Animator` component inspects the action log
+and animates the actions in sequence.
 
 ### Sorting algorithms
 
