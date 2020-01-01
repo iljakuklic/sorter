@@ -43,4 +43,4 @@ main = do
     let sorter = makeSorter opts
     case CL.output opts of
         Nothing -> animateInWindow (900, 600) sorter initArray
-        Just fname -> animateGif (400, 250) fname sorter initArray
+        Just (CL.File fname) -> animateGif (400, 250) fname sorter initArray

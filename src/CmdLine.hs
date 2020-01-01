@@ -8,11 +8,15 @@
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module CmdLine(Algorithm(..), Size, getSize,
+module CmdLine(Algorithm(..), Size, getSize, File(..),
                OptionsW(..), Options, getOptions) where
 
 import           Numeric.Natural
+import           Data.Proxy
 import           Options.Generic
+import qualified Options.Applicative as O
+import qualified Options.Applicative.Types as O
+import qualified Data.Text as T
 
 -- To represent sizes of things with nice metavar.
 newtype Size = Size Natural deriving (Read, Generic)
@@ -25,41 +29,67 @@ instance ParseField Size where
 instance ParseRecord Size
 instance ParseFields Size
 
+-- To represent file arguments with a nice metavar.
+newtype File = File FilePath deriving (Read, Generic)
+
+instance ParseField File where
+    readField = fmap File readField
+instance ParseRecord File
+instance ParseFields File
+
 -- List of available sorting algorithms.
-data Algorithm
-    = Bubble
-    | Select
-    | Quick
-    deriving (Read, Generic)
+data Algorithm = Bubble | Select | Quick
+    deriving (Show, Generic, Bounded, Enum)
+
+-- List of all algorithms and the corresponding string name.
+algorithms :: [(String, Algorithm)]
+algorithms = [ (fieldNameModifier lispCaseModifiers (show a), a)
+             | a <- [minBound..maxBound] ]
+
+-- Join a list of strings with commas.
+commaJoin :: [String] -> String
+commaJoin = drop 2 . concatMap (", " <>)
 
 instance ParseField Algorithm where
-    -- HACK: Use record parser to parse algorithm as a field.
-    -- FIXME: This causes the -h,--help switch to be shown twice
-    --        in the help message.
-    parseField _help _label _short = parseRecordWithModifiers lispCaseModifiers
+    -- Custom command line processing for the algorithm option.
+    parseField help label short = O.option readField fs
+      where
+        fs = foldMap (O.help . (<> algoStr) . T.unpack) help
+          <> foldMap (O.long . T.unpack) label
+          <> foldMap O.short short
+          <> O.metavar (metavar (Proxy :: Proxy Algorithm))
+        algoNames = commaJoin (map fst algorithms)
+        algoStr = " (" <> algoNames <> ")"
+
+    -- Custom parsing of the algorithm option.
+    readField = do
+        str <- O.readerAsk
+        case lookup str algorithms of
+            Just alg -> return alg
+            Nothing -> O.readerError ("Unknown algorithm: " <> str)
 
 instance ParseRecord Algorithm
 instance ParseFields Algorithm
 
 -- Command line options.
 data OptionsW w = Options {
+    -- Options for specifying the sorting algorithm
+    algorithm :: w ::: Algorithm
+        <?> "Sorting algorithm to use",
+    smallOpt :: w ::: Bool
+        <?> "Use specialized sort once array size drops to 6",
+    selectSortUpto :: w ::: Maybe Size
+        <?> "Use select sort for arrays smaller than specified",
+    bubbleThreshold :: w ::: Maybe Size
+        <?> "Switch to bubble sort when all partitions are at most this large",
     -- Options specifying the initial array
     arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
     nearlySorted :: w ::: Bool
         <?> "Generate an array thet is already almost sorted",
     -- Options for specifying output format
-    output :: w ::: Maybe FilePath
-        <?> "Write the animation to a GIF file",
-    -- Options for specifying the sorting algorithm
-    smallOpt :: w ::: Bool
-        <?> "Use specialized sort for small arrays",
-    selectSortUpto :: w ::: Maybe Size
-        <?> "Use select sort for smaller sizes",
-    bubbleThreshold :: w ::: Maybe Size
-        <?> "Switch to bubble sort when all partitions are at most this large",
-    algorithm :: w ::: Algorithm
-        <?> "Sorting algorithm to use"
+    output :: w ::: Maybe File
+        <?> "Write the animation to a GIF file"
   } deriving (Generic)
 
 optionModifiers :: Modifiers
