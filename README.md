@@ -29,10 +29,10 @@ Some generated animations with corresponding command lines.
 
 #### Select sort
 
-![Select sort](gifs/select-30.gif)
+![Select sort](gifs/select-20.gif)
 
 ```
-./sorter -s 30 --algorithm select
+./sorter -s 20 --algorithm select
 ```
 
 #### Quick sort with specialized sorting networks for partition sizes up to 6
