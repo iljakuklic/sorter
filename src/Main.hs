@@ -35,11 +35,12 @@ main = do
     size <- case CL.arraySize opts of
         Nothing -> randomRIO (30, 100)
         Just s -> return (CL.getSize s)
-    initArray <-
+    initArray0 <-
         if CL.nearlySorted opts
             then fmap (map (max 10) . drop 1 . scanl (+) 30)
                      (replicateM size (randomRIO (-5, 10)))
             else replicateM size (randomRIO (10, 300))
+    let initArray = (if CL.reverse opts then reverse else id) initArray0
     let sorter = makeSorter opts
     case CL.output opts of
         Nothing -> animateInWindow (900, 600) sorter initArray

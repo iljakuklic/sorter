@@ -87,6 +87,8 @@ data OptionsW w = Options {
         <?> "Generated input array size",
     nearlySorted :: w ::: Bool
         <?> "Generate an array thet is already almost sorted",
+    reverse :: w ::: Bool
+        <?> "Reverse the array before sorting",
     -- Options for specifying output format
     output :: w ::: Maybe File
         <?> "Write the animation to a GIF file"
@@ -98,6 +100,7 @@ optionModifiers = lispCaseModifiers { shortNameModifier = short }
     short "algorithm" = Just 'a'
     short "arraySize" = Just 's'
     short "output" = Just 'o'
+    short "reverse" = Just 'R'
     short _ = Nothing
 
 instance ParseRecord (OptionsW Wrapped) where
