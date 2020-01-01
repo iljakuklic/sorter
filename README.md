@@ -77,7 +77,7 @@ All operations on the array being sorted have to go through this
 interface. The implementer of the sorting algorithm cannot directly
 access the array.
 Actions are represented explicitly using the `Action` data type.
-That means all steps performed by a particular run the algorithm
+That means all steps performed by a particular run of the algorithm
 to access and manipulate the array can be recorded.
 
 More complicated operations can be defined in terms of these basic
@@ -113,7 +113,47 @@ in a log.
 Subsequently, the `Sorter.Animator` component inspects the action log
 and animates the actions in sequence.
 
+The action logging technique is more general and could be applied to
+any free monad. For sake of simplicity, the implementation here
+uses the specialized `Sorter` and `Action` types.
+
 ### Sorting algorithms
+
+Most sorting algorithms are implemented using open recursion.
+That is, a recursive `quicksort` pseudo-code like this:
+
+```haskell
+quickSort :: Idx -> Idx -> Sorter ()
+quickSort begin end | isEmptyOrSingleton begin end = return ()
+quickSort begin end = do
+    mid <- partition begin end
+    quickSort begin (mid-1)
+    quickSort (mid+1) end
+```
+
+Becomes:
+
+```haskell
+quickSort :: (Idx -> Idx -> Sorter ()) -> Idx -> Idx -> Sorter ()
+quickSort recur begin end | isEmptyOrSingleton begin end = return ()
+quickSort recur begin end = do
+    mid <- partition begin end
+    recur begin (mid-1)
+    recur (mid+1) end
+```
+
+The algorithm proper can then be recovered using `fix quickSort` where
+`fix` is the standard fixpoint operator from the standard library.
+
+The open recursion style allows us to compose sorting algorithms in various
+interesting ways. In particular, there is a combinator that selects the
+algorithm depending on array size. For example, a quick sort that switches
+to select sort for subranges under 10 elements can be specified as follows:
+
+```haskell
+hybridSort :: Idx -> Idx -> Sorter ()
+hybridSort = fix (quickSort . ifSize (<10) (fix selectSort))
+```
 
 ## TODO
 
