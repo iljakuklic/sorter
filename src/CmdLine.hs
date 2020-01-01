@@ -55,8 +55,14 @@ data OptionsW w = Options {
         <?> "Sorting algorithm to use"
   } deriving (Generic)
 
+optionModifiers :: Modifiers
+optionModifiers = lispCaseModifiers { shortNameModifier = short }
+  where
+    short "arraySize" = Just 's'
+    short _ = Nothing
+
 instance ParseRecord (OptionsW Wrapped) where
-    parseRecord = parseRecordWithModifiers lispCaseModifiers
+    parseRecord = parseRecordWithModifiers optionModifiers
 
 type Options = OptionsW Unwrapped
 
