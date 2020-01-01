@@ -35,7 +35,7 @@ Some generated animations with corresponding command lines.
 ./sorter -s 30 --algorithm select
 ```
 
-#### Quick sort with specilized sorting networks for partition sizes up to 6
+#### Quick sort with specialized sorting networks for partition sizes up to 6
 
 ![Quick sort with sortnets](gifs/quick-small-30.gif)
 
@@ -43,7 +43,7 @@ Some generated animations with corresponding command lines.
 ./sorter -s 30 --small-nets --algorithm quick
 ```
 
-#### Buble sort operating on and array that is already almost in order
+#### Bubble sort operating on and array that is already almost in order
 
 ![Bubble sort on almost sorted input](gifs/bubble-nearly-30.gif)
 
@@ -53,9 +53,9 @@ Some generated animations with corresponding command lines.
 
 ## Implementation notes
 
-The implementation of the sorting-algoritm-independent part of the
+The implementation of the sorting-algorithm-independent part of the
 visualizer consists of three main components. The algorithms themselves
-cand be considered to be the fourth component.
+could be considered to be the fourth component.
 
 ### The `Sorter` type
 
@@ -74,7 +74,7 @@ Random ideas, in no particular order.
   * More partitioning schemes
   * Pluggable way to select the pivot
 * Visualization improvements
-  * Highlight subarray currently being processed
+  * Highlight sub-array currently being processed
   * Show pivot value
   * Insertion animation
 * More sorting algorithms
