@@ -12,13 +12,11 @@ module CmdLine(Algorithm(..), Size, getSize, File(..),
                OptionsW(..), Options, getOptions) where
 
 import           Numeric.Natural
-import           Data.Proxy
 import           Options.Generic
 import qualified Options.Applicative as O
-import qualified Data.Text as T
 
--- To represent sizes of things with nice metavar.
-newtype Size = Size Natural deriving (Read, Generic)
+-- To represent sizes of things with a nice metavar.
+newtype Size = Size Natural deriving (Generic)
 
 getSize :: Size -> Int
 getSize (Size s) = fromIntegral s
@@ -29,7 +27,7 @@ instance ParseRecord Size
 instance ParseFields Size
 
 -- To represent file arguments with a nice metavar.
-newtype File = File FilePath deriving (Read, Generic)
+newtype File = File FilePath deriving (Generic)
 
 instance ParseField File where
     readField = fmap File O.str
@@ -45,23 +43,11 @@ algorithms :: [(String, Algorithm)]
 algorithms = [ (fieldNameModifier lispCaseModifiers (show a), a)
              | a <- [minBound..maxBound] ]
 
--- Join a list of strings with commas.
-commaJoin :: [String] -> String
-commaJoin = drop 2 . concatMap (", " <>)
-
 instance ParseField Algorithm where
-    -- Custom command line processing for the algorithm option.
-    parseField help label short = O.option readField fs
-      where
-        fs = foldMap (O.help . (<> algoStr) . T.unpack) help
-          <> foldMap (O.long . T.unpack) label
-          <> foldMap O.short short
-          <> O.metavar (metavar (Proxy :: Proxy Algorithm))
-        algoNames = commaJoin (map fst algorithms)
-        algoStr = " (" <> algoNames <> ")"
-
     -- Custom parsing of the algorithm option.
     readField = O.maybeReader (flip lookup algorithms)
+    -- List algorithm names in the metavar.
+    metavar _proxy = drop 1 (concatMap (('|':) . fst) algorithms)
 
 instance ParseRecord Algorithm
 instance ParseFields Algorithm
@@ -72,7 +58,7 @@ data OptionsW w = Options {
     algorithm :: w ::: Algorithm
         <?> "Sorting algorithm to use",
     smallNets :: w ::: Bool
-        <?> "Use specialized sorting networks once array size drops to 6",
+        <?> "Use specialized sorting networks once array size drops to or under 6",
     selectSortUpto :: w ::: Maybe Size
         <?> "Use select sort for arrays smaller than specified",
     bubbleThreshold :: w ::: Maybe Size
