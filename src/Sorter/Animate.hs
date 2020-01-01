@@ -37,14 +37,6 @@ drawBars bars = G.translate (-1) (-1) picScaled
     pic = foldMap drawBar bars
     picScaled = G.scale (2 * recip width) (2 * recip maxHt) pic
 
--- Update bar order according to action.
-updateOrder :: AnAction -> [Idx] -> [Idx]
-updateOrder (AnAction (SwapAt i j)) = fmap updateIdx
-  where
-    updateIdx n | n == i = j
-    updateIdx n | n == j = i
-    updateIdx n = n
-updateOrder _act = id
 
 -- Animation state.
 data AnimState = AnimState {
@@ -96,18 +88,31 @@ actionDuration (AnAction (SwapAt i j)) = 0.1 * (max 3 (min dist 10))
   where dist = abs (fromIntegral j - fromIntegral i) :: Float
 actionDuration (AnAction (CmpAt _ _)) = 0.1
 
-progressIn :: AnAction -> Float -> Float
-progressIn a dt = dt / actionDuration a
+-- Update bar order according to action.
+updateOrder :: AnAction -> [Idx] -> [Idx]
+updateOrder (AnAction (SwapAt i j)) = fmap updateIdx
+  where
+    updateIdx n | n == i = j
+    updateIdx n | n == j = i
+    updateIdx n = n
+updateOrder _act = id
+
+-- Apply an action to the state.
+applyAction :: AnimState -> AnimState
+applyAction ste@(AnimState _p _ord []) = ste
+applyAction (AnimState _p ord (a:acts)) = AnimState 1.0 (updateOrder a ord) acts
 
 -- Update the animation state.
 tick :: Float -> AnimState -> AnimState
-tick _dt ste@(AnimState _ _ []) = ste
-tick dt ste@(AnimState _ _ (a:acts)) | actionDuration a <= 0.0
-  = tick dt (ste { asActions = acts })
-tick dt ste@(AnimState p _ord (a:_)) | progressIn a dt < p
-  = ste { asCountdown = asCountdown ste - progressIn a dt }
-tick _dt (AnimState _p ord (a:acts))
-  = AnimState 1.0 (updateOrder a ord) acts
+tick _dt ste@(AnimState _p _ord []) = ste
+tick dt ste@(AnimState p _ord (a:_acts)) =
+    if aLeft <= 0.0 then sFinal else sCurr
+  where
+    aDur = actionDuration a
+    aLeft = p * aDur - dt
+    sNext = applyAction ste
+    sFinal = tick (negate aLeft) sNext
+    sCurr = ste { asCountdown = aLeft / aDur }
 
 -- Run animation in a window.
 animateInWindow :: (Int, Int) -> (Idx -> Idx -> Sorter a) -> [Int] -> IO ()
