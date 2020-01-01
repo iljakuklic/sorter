@@ -59,9 +59,49 @@ could be considered to be the fourth component.
 
 ### The `Sorter` type
 
-### Sort runner
+The heart of `sorter` is (perhaps surprisingly) the `Sorter` type.
+It represents the sorting algorithm. All sorting algorithms are
+implemented in terms of this type. `Sorter` is a monad so we can
+chain steps of the sorting algorithm and let subsequent steps depend
+on results of already performed steps. The `Sorter` provides a number
+of actions, for example:
 
-### The animator
+```haskell
+-- Compare values at two indices
+cmpAt :: Idx -> Idx -> Sorter Ordering
+-- Swap values at two indices
+swapAt :: Idx -> Idx -> Sorter ()
+```
+
+All operations on the array being sorted have to go through this
+interface. The implementer of the sorting algorithm cannot directly
+access the array.
+Actions are represented explicitly using the `Action` data type.
+That means all steps performed by a particular run the algorithm
+to access and manipulate the array can be recorded.
+
+More complicated operations can be defined in terms of these basic
+actions, ultimately implementing a sorting algorithm.
+The top-level sorting algorithms are passed array boundary indices
+(unlike in C, the indices are inclusive).
+Example follows:
+
+```haskell
+-- Compare two consecutive elements and swap if not in the right order
+bubble :: Idx -> Sorter ()
+bubble i = do
+    c <- cmpAt i (i+1)
+    when (c == GT) $ swapAt i (i+1)
+
+-- A very simple bubble sort
+bubbleSort :: Idx -> Idx -> Sorter ()
+bubbleSort begin end =
+    for_ [end-1,end-2..begin] $ \stop ->
+        for_ [begin..stop] $ \i ->
+            bubble i
+```
+
+### Sort runner and the animator
 
 ### Sorting algorithms
 
