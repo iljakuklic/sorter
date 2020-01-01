@@ -1,3 +1,5 @@
 .stack*
 stack.yaml
 stack.yaml.lock
+*.gif
+!gifs/*.gif
