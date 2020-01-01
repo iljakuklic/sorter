@@ -40,4 +40,7 @@ main = do
             then fmap (map (max 10) . scanl (+) 30)
                      (replicateM size (randomRIO (-5, 10)))
             else replicateM size (randomRIO (10, 300))
-    animateInWindow (900, 600) (makeSorter opts) initArray
+    let sorter = makeSorter opts
+    case CL.output opts of
+        Nothing -> animateInWindow (900, 600) sorter initArray
+        Just fname -> animateGif (400, 250) fname sorter initArray

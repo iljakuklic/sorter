@@ -48,6 +48,9 @@ data OptionsW w = Options {
         <?> "Generated input array size",
     nearlySorted :: w ::: Bool
         <?> "Generate an array thet is already almost sorted",
+    -- Options for specifying output format
+    output :: w ::: Maybe FilePath
+        <?> "Write the animation to a GIF file",
     -- Options for specifying the sorting algorithm
     smallOpt :: w ::: Bool
         <?> "Use specialized sort for small arrays",
@@ -64,6 +67,7 @@ optionModifiers = lispCaseModifiers { shortNameModifier = short }
   where
     short "algorithm" = Just 'a'
     short "arraySize" = Just 's'
+    short "output" = Just 'o'
     short _ = Nothing
 
 instance ParseRecord (OptionsW Wrapped) where

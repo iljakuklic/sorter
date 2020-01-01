@@ -2,7 +2,7 @@
 
 {-# LANGUAGE GADTs #-}
 
-module Sorter.Animate(animateInWindow) where
+module Sorter.Animate(animateInWindow, animateGif) where
 
 import Sorter.Spec
 import Sorter.Runner
@@ -10,6 +10,7 @@ import Sorter.Runner
 import           Data.Array.Base
 import qualified Data.List as L
 import qualified Graphics.Gloss as G
+import qualified Graphics.Gloss.Export.Gif as G
 
 -- Visual representation of a bar.
 data Bar = Bar {
@@ -43,7 +44,7 @@ data AnimState = AnimState {
     -- Progress of the current animation 0.0..1.0
     asCountdown :: Float,
     -- Current order of bars
-    asOrder :: [Idx],
+    _asOrder :: [Idx],
     -- Remaining actions to be performed
     asActions :: [AnAction]
   }
@@ -114,16 +115,31 @@ tick dt ste@(AnimState p _ord (a:_acts)) =
     sFinal = tick (negate aLeft) sNext
     sCurr = ste { asCountdown = aLeft / aDur }
 
+-- Set up the animation.
+animSetup :: (Idx -> Idx -> Sorter a) -> [Int] -> AnimState
+animSetup sortAlgo elts = initSte
+  where
+    ary = listArray (Idx 0, Idx (length elts - 1)) elts :: UArray Idx Int
+    (_, _, acts) = runSort sortAlgo ary
+    initSte = AnimState 1.0 (take (length elts) [0..]) acts
+
 -- Run animation in a window.
 animateInWindow :: (Int, Int) -> (Idx -> Idx -> Sorter a) -> [Int] -> IO ()
 animateInWindow winSize@(wsx, wsy) sortAlgo elts = do
-    let ary = listArray (Idx 0, Idx (length elts - 1)) elts :: UArray Idx Int
-    let (_, _, acts) = runSort sortAlgo ary
+    let initSte = animSetup sortAlgo elts
     let win = G.InWindow "Sorter" winSize (50, 50)
-    let initSte = AnimState {
-        asCountdown = 1.0,
-        asOrder = take (length elts) [0..],
-        asActions = acts
-      }
     let run = G.simulate win (G.greyN 0.15) 50
     run initSte (draw (fromIntegral wsx, fromIntegral wsy) elts) (const tick)
+
+-- Create an animated gif.
+animateGif :: (Int, Int) -> FilePath
+           -> (Idx -> Idx -> Sorter a) -> [Int] -> IO ()
+animateGif imgSize@(isx, isy) fileName sortAlgo elts = do
+    let initSte = animSetup sortAlgo elts
+    let anim t = draw (fromIntegral isx, fromIntegral isy) elts (tick t initSte)
+    let totalDuration = sum (map actionDuration (asActions initSte))
+    let gifDelay = 5 :: Int
+    let frameDuration = fromIntegral gifDelay / 100.0 :: Float
+    let frames = [0.0,frameDuration..(totalDuration+1.5)]
+    let run = G.exportPicturesToGif gifDelay G.LoopingForever
+    run imgSize (G.greyN 0.15) fileName anim frames
