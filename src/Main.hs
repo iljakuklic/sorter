@@ -20,7 +20,7 @@ makeSorter opts beg end = do
     sizeOpt get = Idx (maybe 0 CL.getSize (get opts))
     selectSize = sizeOpt CL.selectSortUpto
     bubbleSize = sizeOpt CL.bubbleThreshold
-    smallSpecSorter = if CL.smallOpt opts then smallSort else id
+    smallSpecSorter = if CL.smallNets opts then smallSort else id
     smallSelectSorter = ifSize (<= selectSize) (fix selectSort)
     smallSorter = smallSelectSorter . smallSpecSorter
     baseSorter = case CL.algorithm opts of

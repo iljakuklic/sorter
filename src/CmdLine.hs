@@ -15,7 +15,6 @@ import           Numeric.Natural
 import           Data.Proxy
 import           Options.Generic
 import qualified Options.Applicative as O
-import qualified Options.Applicative.Types as O
 import qualified Data.Text as T
 
 -- To represent sizes of things with nice metavar.
@@ -33,7 +32,7 @@ instance ParseFields Size
 newtype File = File FilePath deriving (Read, Generic)
 
 instance ParseField File where
-    readField = fmap File readField
+    readField = fmap File O.str
 instance ParseRecord File
 instance ParseFields File
 
@@ -62,11 +61,7 @@ instance ParseField Algorithm where
         algoStr = " (" <> algoNames <> ")"
 
     -- Custom parsing of the algorithm option.
-    readField = do
-        str <- O.readerAsk
-        case lookup str algorithms of
-            Just alg -> return alg
-            Nothing -> O.readerError ("Unknown algorithm: " <> str)
+    readField = O.maybeReader (flip lookup algorithms)
 
 instance ParseRecord Algorithm
 instance ParseFields Algorithm
@@ -76,8 +71,8 @@ data OptionsW w = Options {
     -- Options for specifying the sorting algorithm
     algorithm :: w ::: Algorithm
         <?> "Sorting algorithm to use",
-    smallOpt :: w ::: Bool
-        <?> "Use specialized sort once array size drops to 6",
+    smallNets :: w ::: Bool
+        <?> "Use specialized sorting networks once array size drops to 6",
     selectSortUpto :: w ::: Maybe Size
         <?> "Use select sort for arrays smaller than specified",
     bubbleThreshold :: w ::: Maybe Size
