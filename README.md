@@ -155,7 +155,7 @@ to select sort for subranges under 10 elements can be specified as follows:
 
 ```haskell
 hybridSort :: Idx -> Idx -> Sorter ()
-hybridSort = fix $ quickSort . ifSize (<10) (fix selectSort)
+hybridSort = fix $ ifSize (<10) (fix selectSort) . quickSort
 ```
 
 ## TODO

@@ -22,12 +22,13 @@ makeSorter opts beg end = do
     bubbleSize = sizeOpt CL.bubbleThreshold
     smallSpecSorter = if CL.smallNets opts then smallSort else id
     smallSelectSorter = ifSize (<= selectSize) (fix selectSort)
-    smallSorter = smallSelectSorter . smallSpecSorter
+    smallSorter = smallSpecSorter . smallSelectSorter
     baseSorter = case CL.algorithm opts of
         CL.Select -> selectSort
         CL.Bubble -> bubbleSort
         CL.Quick -> quickSort
-    mainSorter = baseSorter . smallSorter . ifSize (<= bubbleSize) noSort
+    stopSorter = ifSize (<= bubbleSize) noSort
+    mainSorter = stopSorter . smallSorter . baseSorter
 
 main :: IO ()
 main = do
