@@ -174,8 +174,9 @@ Random ideas, in no particular order.
   * (...)
 * Load array to be sorted from a file
 * More options to generate the input
-* Split into library and executable packages
-  * Convert comments to proper haddock docs
+* Convert comments to proper haddock docs
 * Sorter to use final encoding
 * Allow colours and animation speed to be adjusted
 * Allow window (and GIF) size to be adjusted
+* Make GIF export a build-time option
+  (it is a bit awkward to set up the GIF export library dependency)
