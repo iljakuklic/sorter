@@ -159,7 +159,6 @@ hybridSort = fix $ quickSort . ifSize (<10) (fix selectSort)
 
 Random ideas, in no particular order.
 
-* Test suite
 * Improvements to quick sort
   * More partitioning schemes
   * Pluggable way to select the pivot
@@ -172,11 +171,17 @@ Random ideas, in no particular order.
   * shell sort
   * heap sort
   * (...)
-* Load array to be sorted from a file
-* More options to generate the input
-* Convert comments to proper haddock docs
-* Sorter to use final encoding
-* Allow colours and animation speed to be adjusted
-* Allow window (and GIF) size to be adjusted
-* Make GIF export a build-time option
-  (it is a bit awkward to set up the GIF export library dependency)
+* Sorter implementation improvements
+  * Sorter to use final encoding
+* More flexibility specifying input array
+  * Load array to be sorted from a file
+  * More options to generate the input randomly
+* More flexibility regarding the visualization
+  * Allow colours to be adjusted
+  * Allow animation speed to be adjusted
+  * Allow window size (and GIF size) to be adjusted
+* General software engineering improvements
+  * Test a test suite
+  * Convert comments to proper haddock docs
+  * Make GIF export a build-time option
+    (it is a bit awkward to set up the GIF export library dependency)
