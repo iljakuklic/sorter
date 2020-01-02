@@ -1,7 +1,7 @@
 cabal-version:       2.2
 name:                sorter
 version:             0.1.1.0
--- synopsis:
+synopsis:            Visualize various sorting algorithms.
 -- description:
 homepage:            https://github.com/iljakuklic/sorter#readme
 license:             MIT
