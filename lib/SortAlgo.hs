@@ -5,7 +5,7 @@ module SortAlgo(module SortAlgo.BubbleSort,
                 module SortAlgo.QuickSort,
                 module SortAlgo.SmallSort,
                 SortAlgo, OpenSortAlgo,
-                fix, ifSize, noSort) where
+                fix, ifSize, noSort, sortFocuser) where
 
 import SortAlgo.Algo
 import SortAlgo.BubbleSort
@@ -24,3 +24,7 @@ ifSize cond thenSorter elseSorter beg end =
 -- | Trivial sorting algorithm that does not sort anything.
 noSort :: SortAlgo
 noSort _beg _end = return ()
+
+-- | Focus the range being sorted before sorting.
+sortFocuser :: SortAlgo -> SortAlgo
+sortFocuser theSort beg end = focusRange beg end >> theSort beg end

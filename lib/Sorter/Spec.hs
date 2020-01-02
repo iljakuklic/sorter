@@ -12,18 +12,18 @@
 {-# LANGUAGE RankNTypes #-}
 
 module Sorter.Spec(-- * Array indexing
-                   Idx(..),
+                   Idx(..), rangeSize,
                    -- * Actions
                    Action(..), AnAction(..),
                    -- * Sorter
                    Sorter,
                    -- ** Sorter actions
                    -- | See 'Action' for descriptions.
-                   peekAt, compareAt, swapAt,
+                   peekAt, compareAt, swapAt, focusRange, dropFocus,
                    -- ** Execute a sorter
                    runSorter) where
 
-import Data.Array
+import Data.Array hiding (rangeSize)
 import Control.Monad
 import Control.Applicative
 
@@ -33,10 +33,17 @@ import Control.Applicative
 -- We use a different type since array values are also `Int`s and it would
 -- be rather unpleasant if the two got mixed up.
 newtype Idx = Idx { getIdx :: Int } deriving (Eq, Ord, Enum, Show)
+
 deriving instance Num Idx
 deriving instance Real Idx
 deriving instance Integral Idx
 deriving instance Ix Idx
+
+-- | Calculate range size given by a pair of indices indicating
+-- range beginning and end.
+rangeSize :: Idx -> Idx -> Idx
+rangeSize beg end | end < beg = 0
+rangeSize beg end = end - beg + 1
 
 -- | Set of primitive actions that an algorithm can perform on an array.
 data Action a where
@@ -47,6 +54,9 @@ data Action a where
     -- | Compare elements at two indices. This may be visualized
     -- differently than just peeking at two elements and comparing.
     CompareAt :: Idx -> Idx -> Action Ordering
+    -- | Highlight the part of the array in specified range.
+    -- For visualization purposes only.
+    FocusRange :: Idx -> Idx -> Action ()
 
 deriving instance Show (Action a)
 
@@ -93,6 +103,12 @@ compareAt i j = act (CompareAt i j)
 
 swapAt :: Idx -> Idx -> Sorter ()
 swapAt i j = when (i /= j) $ act (SwapAt i j)
+
+focusRange :: Idx -> Idx -> Sorter ()
+focusRange i j = act (FocusRange i j)
+
+dropFocus :: Sorter ()
+dropFocus = focusRange 1 0
 
 -- | Run sorter in given monad by providing a handler for individual actions.
 runSorter :: Monad m

@@ -31,6 +31,7 @@ handleAction (SwapAt i j) arr = do
     xj <- readArray arr j
     writeArray arr i xj
     writeArray arr j xi
+handleAction (FocusRange _i _j) _arr = return ()
 
 -- Log and perform given action.
 handleAndLogAction :: Action a -> SorterMonad s a

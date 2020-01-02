@@ -28,7 +28,7 @@ makeSorter opts beg end = do
         CL.Bubble -> bubbleSort
         CL.Quick -> quickSort
     stopSorter = ifSize (<= bubbleSize) noSort
-    mainSorter = stopSorter . smallSorter . baseSorter
+    mainSorter = stopSorter . sortFocuser . smallSorter . baseSorter
 
 main :: IO ()
 main = do
