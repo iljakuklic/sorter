@@ -68,7 +68,7 @@ of basic actions, for example:
 
 ```haskell
 -- Compare values at two indices
-cmpAt :: Idx -> Idx -> Sorter Ordering
+compareAt :: Idx -> Idx -> Sorter Ordering
 -- Swap values at two indices
 swapAt :: Idx -> Idx -> Sorter ()
 ```
@@ -90,7 +90,7 @@ Example follows:
 -- Compare two consecutive elements and swap if not in the right order
 bubble :: Idx -> Sorter ()
 bubble i = do
-    c <- cmpAt i (i+1)
+    c <- compareAt i (i+1)
     when (c == GT) $ swapAt i (i+1)
 
 -- A very simple bubble sort

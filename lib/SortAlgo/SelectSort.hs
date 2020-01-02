@@ -9,7 +9,7 @@ import Control.Monad (when)
 findMinIdx :: Idx -> Idx -> Idx -> Sorter Idx
 findMinIdx cur beg end | beg > end = return cur
 findMinIdx cur beg end = do
-    r <- cmpAt cur beg
+    r <- compareAt cur beg
     findMinIdx (if r == GT then beg else cur) (beg + 1) end
 
 -- | A simple selection sort.

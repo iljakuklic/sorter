@@ -26,6 +26,6 @@ rangeSize beg end = end - beg + 1
 -- always be placed on index `i`, even if `j` preceeds `i`.
 sort2 :: Idx -> Idx -> Sorter Bool
 sort2 i j = do
-    cmpAt i j >>= \case
+    compareAt i j >>= \case
         GT -> swapAt i j >> return True
         _  -> return False

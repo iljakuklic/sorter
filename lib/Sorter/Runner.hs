@@ -24,7 +24,7 @@ type SorterMonad s = RWST (ArrayTy s) [AnAction] () (ST s)
 -- Perform an action on an array.
 handleAction :: Action a -> ArrayTy s -> ST s a
 handleAction (PeekAt i) arr = readArray arr i
-handleAction (CmpAt i j) arr =
+handleAction (CompareAt i j) arr =
     liftA2 compare (readArray arr i) (readArray arr j)
 handleAction (SwapAt i j) arr = do
     xi <- readArray arr i

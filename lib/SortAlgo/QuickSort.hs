@@ -9,7 +9,7 @@ import SortAlgo.Algo
 partition :: Idx -> Idx -> Idx -> Sorter Idx
 partition i j piv | j >= piv = swapAt i piv >> return i
 partition i j piv = do
-    cmpAt j piv >>= \case
+    compareAt j piv >>= \case
         LT -> swapAt i j >> partition (i + 1) (j + 1) piv
         _ -> partition i (j + 1) piv
 

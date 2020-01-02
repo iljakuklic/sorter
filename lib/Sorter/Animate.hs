@@ -72,7 +72,7 @@ drawState vals (AnimState to ord (AnAction (SwapAt i j) : _)) = bars
     pos ix | ix == i = lerp (1.0 - to)
     pos ix | ix == j = lerp to
     pos ix = fromIntegral ix
-drawState vals (AnimState _ ord (AnAction (CmpAt i j) : _))
+drawState vals (AnimState _ ord (AnAction (CompareAt i j) : _))
   = drawBarsWithHighlight ord vals [i, j]
 drawState vals (AnimState _ ord _)
   = drawBarsWithHighlight ord vals []
@@ -87,7 +87,7 @@ actionDuration :: AnAction -> Float
 actionDuration (AnAction (PeekAt _)) = 0.01
 actionDuration (AnAction (SwapAt i j)) = 0.1 * (max 3 (min dist 10))
   where dist = abs (fromIntegral j - fromIntegral i) :: Float
-actionDuration (AnAction (CmpAt _ _)) = 0.1
+actionDuration (AnAction (CompareAt _ _)) = 0.1
 
 -- Update bar order according to action.
 updateOrder :: AnAction -> [Idx] -> [Idx]

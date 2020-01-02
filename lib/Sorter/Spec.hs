@@ -19,7 +19,7 @@ module Sorter.Spec(-- * Array indexing
                    Sorter,
                    -- ** Sorter actions
                    -- | See 'Action' for descriptions.
-                   peekAt, cmpAt, swapAt,
+                   peekAt, compareAt, swapAt,
                    -- ** Execute a sorter
                    runSorter) where
 
@@ -46,7 +46,7 @@ data Action a where
     SwapAt :: Idx -> Idx -> Action ()
     -- | Compare elements at two indices. This may be visualized
     -- differently than just peeking at two elements and comparing.
-    CmpAt :: Idx -> Idx -> Action Ordering
+    CompareAt :: Idx -> Idx -> Action Ordering
 
 deriving instance Show (Action a)
 
@@ -88,8 +88,8 @@ act a = SBind a SPure
 peekAt :: Idx -> Sorter Int
 peekAt i = act (PeekAt i)
 
-cmpAt :: Idx -> Idx -> Sorter Ordering
-cmpAt i j = act (CmpAt i j)
+compareAt :: Idx -> Idx -> Sorter Ordering
+compareAt i j = act (CompareAt i j)
 
 swapAt :: Idx -> Idx -> Sorter ()
 swapAt i j = when (i /= j) $ act (SwapAt i j)
