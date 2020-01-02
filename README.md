@@ -124,18 +124,21 @@ That is, a recursive `quicksort` pseudo-code like this:
 
 ```haskell
 quickSort :: Idx -> Idx -> Sorter ()
-quickSort begin end | isEmptyOrSingleton begin end = return ()
+quickSort begin end
+    | isEmptyOrSingleton begin end = return ()
 quickSort begin end = do
     mid <- partition begin end
     quickSort begin (mid-1)
     quickSort (mid+1) end
 ```
 
-Becomes:
+Becomes by replacing the recursive occurrence of `quickSort` by an extra
+argument (here called `recur`) this:
 
 ```haskell
 quickSort :: (Idx -> Idx -> Sorter ()) -> Idx -> Idx -> Sorter ()
-quickSort recur begin end | isEmptyOrSingleton begin end = return ()
+quickSort recur begin end
+    | isEmptyOrSingleton begin end = return ()
 quickSort recur begin end = do
     mid <- partition begin end
     recur begin (mid-1)
