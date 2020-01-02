@@ -185,6 +185,5 @@ Random ideas, in no particular order.
   * Allow animation speed to be adjusted
   * Allow window size (and GIF size) to be adjusted
 * General software engineering improvements
-  * Add a test suite
   * Make GIF export a build-time option
     (it is a bit awkward to set up the GIF export library dependency)
