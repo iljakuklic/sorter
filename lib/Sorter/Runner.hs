@@ -4,7 +4,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GADTs #-}
 
-module Sorter.Runner(runSort) where
+module Sorter.Runner(runSort, sortUsing) where
 
 import Sorter.Spec
 
@@ -58,3 +58,15 @@ runSort sorter inAry = runST $ do
     outAry <- freeze ary
     -- Return sorter result, the final array, and the action log.
     return (res, outAry, actions)
+
+-- | Run the sorting algorithm.
+--
+-- This operates on lists to match the interface of standard sort.
+sortUsing :: (Idx -> Idx -> Sorter a)
+          -- ^ Sorting algorithm to use
+          -> [Int]
+          -- ^ Input list
+          -> [Int]
+          -- ^ Sorted list
+sortUsing sorter xs = let (_, r, _) = runSort sorter ary in elems r
+  where ary = listArray (Idx 0, Idx (length xs - 1)) xs :: UArray Idx Int
