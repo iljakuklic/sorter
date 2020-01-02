@@ -1,4 +1,4 @@
--- Sorting visualization.
+-- | Sorting visualization.
 
 {-# LANGUAGE GADTs #-}
 
@@ -123,17 +123,31 @@ animSetup sortAlgo elts = initSte
     (_, _, acts) = runSort sortAlgo ary
     initSte = AnimState 1.0 (take (length elts) [0..]) acts
 
--- Run animation in a window.
-animateInWindow :: (Int, Int) -> (Idx -> Idx -> Sorter a) -> [Int] -> IO ()
+-- | Run animation in a window.
+animateInWindow
+    :: (Int, Int)
+    -- ^ Window size
+    -> (Idx -> Idx -> Sorter a)
+    -- ^ Sorting algorithm to use
+    -> [Int]
+    -- ^ Input array
+    -> IO ()
 animateInWindow winSize@(wsx, wsy) sortAlgo elts = do
     let initSte = animSetup sortAlgo elts
     let win = G.InWindow "Sorter" winSize (50, 50)
     let run = G.simulate win (G.greyN 0.15) 50
     run initSte (draw (fromIntegral wsx, fromIntegral wsy) elts) (const tick)
 
--- Create an animated gif.
-animateGif :: (Int, Int) -> FilePath
-           -> (Idx -> Idx -> Sorter a) -> [Int] -> IO ()
+-- | Create an animated gif.
+animateGif :: (Int, Int)
+           -- ^ GIF resolution
+           -> FilePath
+           -- ^ Output file name
+           -> (Idx -> Idx -> Sorter a)
+           -- ^ Sorting algorithm to use
+           -> [Int]
+           -- ^ Input array
+           -> IO ()
 animateGif imgSize@(isx, isy) fileName sortAlgo elts = do
     let initSte = animSetup sortAlgo elts
     let anim t = draw (fromIntegral isx, fromIntegral isy) elts (tick t initSte)

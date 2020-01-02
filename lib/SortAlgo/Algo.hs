@@ -1,4 +1,4 @@
--- Various definitions to support implementing sorting algorithms.
+-- | Various definitions to support implementing sorting algorithms.
 
 {-# LANGUAGE LambdaCase #-}
 
@@ -7,20 +7,23 @@ module SortAlgo.Algo(module Sorter.Spec, OpenSortAlgo, SortAlgo,
 
 import Sorter.Spec
 
--- Sort algorithm takes array bounds and produces a sorter.
+-- | Sort algorithm takes array bounds and produces a sorter.
+-- Unline in C (and like in Data.Arry), the bounds are inclusive.
 type SortAlgo = Idx -> Idx -> Sorter ()
 
--- Sorting algorithm with open recursion for greater flexibility.
+-- | Sorting algorithm with open recursion for greater flexibility.
 type OpenSortAlgo = SortAlgo -> SortAlgo
 
--- Calculate range size given by a pair of indices indicating
+-- | Calculate range size given by a pair of indices indicating
 -- range beginning and end.
 rangeSize :: Idx -> Idx -> Idx
 rangeSize beg end | end < beg = 0
 rangeSize beg end = end - beg + 1
 
--- Sort elements on two indices i, j.
--- Returns whether the elements have been swapped.
+-- | Sort elements on two indices `i`, `j`.
+--
+-- Returns whether the elements have been swapped. Smaller element will
+-- always be placed on index `i`, even if `j` preceeds `i`.
 sort2 :: Idx -> Idx -> Sorter Bool
 sort2 i j = do
     cmpAt i j >>= \case

@@ -1,4 +1,4 @@
--- Implements sorter in terms of mutable arrays and keeps a log of
+-- | Implements sorter in terms of mutable arrays and keeps a log of
 -- actions performed for later visualization.
 
 {-# LANGUAGE FlexibleContexts #-}
@@ -38,11 +38,14 @@ handleAndLogAction a = do
     tell [AnAction a]
     ask >>= lift . handleAction a
 
--- Run the sorting algorithm on given immutable array.
+-- | Run the sorting algorithm on given immutable array.
 runSort :: (IArray iarr Int)
         => (Idx -> Idx -> Sorter a)
+        -- ^ Sorting algorithm to run
         -> iarr Idx Int
+        -- ^ Input array
         -> (a, iarr Idx Int, [AnAction])
+        -- ^ (sorter result, final sorted array, action log)
 runSort sorter inAry = runST $ do
     -- First convert to a mutable array.
     ary <- thaw inAry

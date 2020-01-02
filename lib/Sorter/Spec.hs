@@ -1,4 +1,4 @@
--- This module defines infrastructure for specifying sorting algorithms to
+-- | This module defines infrastructure for specifying sorting algorithms to
 -- be visualized. It defines a specialized data type (derived as free monad)
 -- for expressing an algorithm and a set of actions that could be visualized
 -- (such as comparing or swapping two array elements). The idea is that the
@@ -11,16 +11,26 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 
-module Sorter.Spec(Idx(..), Action(..), AnAction(..), Sorter,
+module Sorter.Spec(-- * Array indexing
+                   Idx(..),
+                   -- * Actions
+                   Action(..), AnAction(..),
+                   -- * Sorter
+                   Sorter,
+                   -- ** Sorter actions
+                   -- | See 'Action' for descriptions.
                    peekAt, cmpAt, swapAt,
+                   -- ** Execute a sorter
                    runSorter) where
 
 import Data.Array
 import Control.Monad
 import Control.Applicative
 
+-- | Array index.
+--
 -- A wrapper around Int that represents an index into the array.
--- We use a different type since array values are also Ints and it would
+-- We use a different type since array values are also `Int`s and it would
 -- be rather unpleasant if the two got mixed up.
 newtype Idx = Idx { getIdx :: Int } deriving (Eq, Ord, Enum, Show)
 deriving instance Num Idx
@@ -28,23 +38,23 @@ deriving instance Real Idx
 deriving instance Integral Idx
 deriving instance Ix Idx
 
--- Set of actions that an algorithm can perform on an array.
+-- | Set of primitive actions that an algorithm can perform on an array.
 data Action a where
-    -- Get value of an element at given index.
+    -- | Get value of an element at given index.
     PeekAt :: Idx -> Action Int
-    -- Swap elements at two indices.
+    -- | Swap elements at two indices.
     SwapAt :: Idx -> Idx -> Action ()
-    -- Compare elements at two indices. This may be visualized
+    -- | Compare elements at two indices. This may be visualized
     -- differently than just peeking at two elements and comparing.
     CmpAt :: Idx -> Idx -> Action Ordering
 
 deriving instance Show (Action a)
 
--- Hide the action return type so we can store action log in a list.
+-- | Hide the action return type so we can store action log in a list.
 data AnAction = forall a . AnAction { getTheAction :: Action a }
 deriving instance Show AnAction
 
--- A free monad specialized for sort actions. This allows us chaining actions
+-- | A free monad specialized for sort actions. This allows us chaining actions
 -- and lets subsequent actions depend on results of previous ones.
 data Sorter a where
     SPure :: a -> Sorter a
@@ -84,7 +94,12 @@ cmpAt i j = act (CmpAt i j)
 swapAt :: Idx -> Idx -> Sorter ()
 swapAt i j = when (i /= j) $ act (SwapAt i j)
 
--- Run sorter in given monad by providing a handler for individual actions.
-runSorter :: Monad m => (forall b . Action b -> m b) -> Sorter a -> m a
+-- | Run sorter in given monad by providing a handler for individual actions.
+runSorter :: Monad m
+          => (forall b . Action b -> m b)
+          -- ^ Action handler
+          -> Sorter a
+          -- ^ Sorter to run
+          -> m a
 runSorter _ (SPure x) = return x
 runSorter h (SBind a f) = h a >>= runSorter h . f

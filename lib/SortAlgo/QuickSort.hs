@@ -5,7 +5,7 @@ module SortAlgo.QuickSort(quickSort) where
 
 import SortAlgo.Algo
 
--- Lomuto partition scheme. Returns the final index of the pivot.
+-- | Lomuto partition scheme. Returns the final index of the pivot.
 partition :: Idx -> Idx -> Idx -> Sorter Idx
 partition i j piv | j >= piv = swapAt i piv >> return i
 partition i j piv = do
@@ -13,7 +13,7 @@ partition i j piv = do
         LT -> swapAt i j >> partition (i + 1) (j + 1) piv
         _ -> partition i (j + 1) piv
 
--- Quick sort.
+-- | Quick sort.
 quickSort :: OpenSortAlgo
 quickSort _rec beg end | rangeSize beg end < 2 =
     return ()

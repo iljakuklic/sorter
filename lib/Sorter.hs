@@ -1,3 +1,4 @@
+-- | All that is required for specifyning and running sorting algorithms.
 
 module Sorter(module Sorter.Spec,
               module Sorter.Runner,
@@ -6,4 +7,3 @@ module Sorter(module Sorter.Spec,
 import Sorter.Spec
 import Sorter.Runner
 import Sorter.Animate
-

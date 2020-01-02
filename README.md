@@ -43,7 +43,7 @@ Some generated animations with corresponding command lines.
 ./sorter -s 30 --small-nets --algorithm quick
 ```
 
-#### Bubble sort operating on and array that is already almost in order
+#### Bubble sort operating on an array that is already almost in order
 
 ![Bubble sort on almost sorted input](gifs/bubble-nearly-30.gif)
 
@@ -173,6 +173,7 @@ Random ideas, in no particular order.
   * (...)
 * Sorter implementation improvements
   * Sorter to use final encoding
+  * Expose state to the sorting algorithms (not sure how would that compose?)
 * More flexibility specifying input array
   * Load array to be sorted from a file
   * More options to generate the input randomly
@@ -181,7 +182,6 @@ Random ideas, in no particular order.
   * Allow animation speed to be adjusted
   * Allow window size (and GIF size) to be adjusted
 * General software engineering improvements
-  * Test a test suite
-  * Convert comments to proper haddock docs
+  * Add a test suite
   * Make GIF export a build-time option
     (it is a bit awkward to set up the GIF export library dependency)
