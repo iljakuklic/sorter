@@ -48,7 +48,7 @@ runSort sorter inAry = runST $ do
     ary <- thaw inAry
     -- Get array size to pass to the sorting algorithm.
     (lo, hi) <- getBounds ary
-    -- Run the sortin algo in RWS monad.
+    -- Run the sorting algorithm in RWS monad.
     let sorting = runSorter handleAndLogAction (sorter lo hi)
     (res, actions) <- evalRWST sorting ary ()
     -- Get the resulting array

@@ -1,9 +1,9 @@
--- This module defines infrastricture for specifying sorting algorithms to
--- be visualized. It defenes a specialized data type (derived as free monad)
+-- This module defines infrastructure for specifying sorting algorithms to
+-- be visualized. It defines a specialized data type (derived as free monad)
 -- for expressing an algorithm and a set of actions that could be visualized
 -- (such as comparing or swapping two array elements). The idea is that the
 -- array to be sorted can only be accessed by means of these actions so
--- everyting that happens to the array can be logged and later visualized.
+-- everything that happens to the array can be logged and later visualized.
 
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE GADTs #-}
@@ -20,7 +20,7 @@ import Control.Monad
 import Control.Applicative
 
 -- A wrapper around Int that represents an index into the array.
--- We use a different type since array valueas are also Ints and it would
+-- We use a different type since array values are also Ints and it would
 -- be rather unpleasant if the two got mixed up.
 newtype Idx = Idx { getIdx :: Int } deriving (Eq, Ord, Enum, Show)
 deriving instance Num Idx
@@ -73,7 +73,7 @@ instance Monoid a => Monoid (Sorter a) where
 act :: Action a -> Sorter a
 act a = SBind a SPure
 
--- Conveient action wrappers for specifying algorithms.
+-- Convenient action wrappers for specifying algorithms.
 
 peekAt :: Idx -> Sorter Int
 peekAt i = act (PeekAt i)

@@ -1,4 +1,4 @@
--- Various definititons to support implementing sorting algorithms.
+-- Various definitions to support implementing sorting algorithms.
 
 {-# LANGUAGE LambdaCase #-}
 
