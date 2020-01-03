@@ -20,16 +20,17 @@ import qualified Hedgehog.Gen as G
 genInt = G.int (R.exponentialFrom 0 minBound maxBound)
 
 -- Check a sorter against reference implementation `Data.List.sort`.
-checkSorter :: SortAlgo -> Property
-checkSorter sorter = withTests 500 . property $ do
+checkSorter :: TestLimit -> SortAlgo -> Property
+checkSorter n sorter = withTests n . property $ do
     xs <- forAll $ G.list (R.linear 0 300) genInt
     sortUsing sorter xs === L.sort xs
 
 -- Define properties to test individual sorting algorithms.
-prop_select = checkSorter (fix selectSort)
-prop_bubble = withTests 200 $ checkSorter (fix bubbleSort)
-prop_quick = checkSorter (fix quickSort)
-prop_smallquick = checkSorter (fix $ quickSort . smallSort)
+prop_select = checkSorter 500 (fix selectSort)
+prop_bubble = checkSorter 200 (fix bubbleSort)
+prop_bubblesimple = checkSorter 100 bubbleSortSimple
+prop_quick = checkSorter 500 (fix quickSort)
+prop_smallquick = checkSorter 500 (fix $ quickSort . smallSort)
 
 -- Special testing for small sorting networks.
 prop_small = withTests 10000 . property $ do
