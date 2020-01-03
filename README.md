@@ -29,7 +29,7 @@ Some generated animations with corresponding command lines.
 
 #### Select sort
 
-![Select sort](gifs/select-20.gif)
+![Select sort](gifs/select-20-hl.gif)
 
 ```
 ./sorter -s 20 --algorithm select
@@ -37,7 +37,7 @@ Some generated animations with corresponding command lines.
 
 #### Quick sort with specialized sorting networks for partition sizes up to 6
 
-![Quick sort with sortnets](gifs/quick-small-30.gif)
+![Quick sort with sortnets](gifs/quick-small-30-hl.gif)
 
 ```
 ./sorter -s 30 --small-nets --algorithm quick
@@ -45,7 +45,7 @@ Some generated animations with corresponding command lines.
 
 #### Bubble sort operating on an array that is already almost in order
 
-![Bubble sort on almost sorted input](gifs/bubble-nearly-30.gif)
+![Bubble sort on almost sorted input](gifs/bubble-nearly-30-hl.gif)
 
 ```
 ./sorter -s 30 --nearly-sorted --algorithm bubble
@@ -146,7 +146,7 @@ quickSort recur begin end = do
 ```
 
 The algorithm proper can then be recovered using `fix quickSort` where
-`fix` is the standard fixpoint operator from the standard library.
+`fix` is the standard fixed point operator from the standard library.
 
 The open recursion style allows us to compose sorting algorithms in various
 interesting ways. In particular, there is a combinator that selects the
@@ -158,6 +158,17 @@ hybridSort :: Idx -> Idx -> Sorter ()
 hybridSort = fix $ ifSize (<10) (fix selectSort) . quickSort
 ```
 
+There is also `sortFocuser` that has the same interface as sorters but does
+not sort anything. Instead it only highlights range being sorted in
+the animation. This way, we achieve a nice separation of concerns between
+visualization and implementing sorting algorithms themselves.
+To run bubble sort where the currently sorted range is highlighted, do this:
+
+```haskell
+bubbleSortHl :: Idx -> Idx -> Sorter ()
+bubbleSortHl = fix $ sortFocuser . bubbleSort
+```
+
 ## TODO
 
 Random ideas, in no particular order.
@@ -166,7 +177,6 @@ Random ideas, in no particular order.
   * More partitioning schemes
   * Pluggable way to select the pivot
 * Visualization improvements
-  * Highlight sub-array currently being processed
   * Show pivot value
   * Insertion animation
 * More sorting algorithms
