@@ -64,6 +64,8 @@ data OptionsW w = Options {
     bubbleThreshold :: w ::: Maybe Size
         <?> "Switch to bubble sort when all partitions are at most this large",
     -- Options specifying the initial array
+    input :: w ::: Maybe File
+        <?> "Load input array form a file",
     arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
     nearlySorted :: w ::: Bool
@@ -82,6 +84,7 @@ optionModifiers = lispCaseModifiers { shortNameModifier = short }
     short "arraySize" = Just 's'
     short "output" = Just 'o'
     short "reverse" = Just 'R'
+    short "input" = Just 'i'
     short _ = Nothing
 
 instance ParseRecord (OptionsW Wrapped) where

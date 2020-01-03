@@ -188,7 +188,6 @@ Random ideas, in no particular order.
   * Sorter to use final encoding
   * Expose state to the sorting algorithms (not sure how would that compose?)
 * More flexibility specifying input array
-  * Load array to be sorted from a file
   * More options to generate the input randomly
 * More flexibility regarding the visualization
   * Allow colours to be adjusted
