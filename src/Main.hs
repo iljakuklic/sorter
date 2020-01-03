@@ -1,6 +1,4 @@
-
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE NoMonomorphismRestriction #-}
+-- Main command line interface to sorter
 
 module Main(main) where
 

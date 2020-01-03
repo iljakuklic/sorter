@@ -5,7 +5,6 @@
 -- array to be sorted can only be accessed by means of these actions so
 -- everything that happens to the array can be logged and later visualized.
 
-{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
