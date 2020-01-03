@@ -16,7 +16,7 @@ import           Text.Read
 makeSorter :: CL.Options -> SortAlgo
 makeSorter opts beg end = do
     fix mainSorter beg end
-    when (bubbleSize > 0) $ fix bubbleSort beg end
+    when (bubbleSize > 0) $ fix (sortFocuser . bubbleSort) beg end
   where
     sizeOpt f = Idx (maybe 0 CL.getSize (f opts))
     selectSize = sizeOpt CL.selectSortUpto
@@ -46,6 +46,10 @@ readInput (CL.File f) = fmap process (readFile f) >>= either fail return
 -- Generate a random input.
 genInput :: CL.Options -> IO [Int]
 genInput opts = do
+    case CL.randomSeed opts of
+        Just (CL.Seed g) -> setStdGen g
+        Nothing ->
+            getStdGen >>= putStrLn . ("To reproduce pass -R"<>) . show . show
     size <- case CL.arraySize opts of
         Nothing -> randomRIO (30, 100)
         Just s -> return (CL.getSize s)

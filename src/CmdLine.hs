@@ -8,12 +8,13 @@
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module CmdLine(Algorithm(..), Size, getSize, File(..),
+module CmdLine(Algorithm(..), Size, getSize, File(..), Seed(..),
                OptionsW(..), Options, getOptions) where
 
 import           Numeric.Natural
 import           Options.Generic
 import qualified Options.Applicative as O
+import           System.Random
 
 -- To represent sizes of things with a nice metavar.
 newtype Size = Size Natural deriving (Generic)
@@ -31,8 +32,17 @@ newtype File = File FilePath deriving (Generic)
 
 instance ParseField File where
     readField = fmap File O.str
-instance ParseRecord File
+instance ParseRecord File where
 instance ParseFields File
+
+-- Support reading random seed from the command line.
+newtype Seed = Seed StdGen deriving (Generic)
+
+instance ParseField Seed where
+    readField = fmap Seed O.auto
+instance ParseFields Seed
+instance ParseRecord Seed where
+    parseRecord = fmap getOnly parseRecord
 
 -- List of available sorting algorithms.
 data Algorithm = Bubble | Select | Quick
@@ -68,6 +78,8 @@ data OptionsW w = Options {
         <?> "Load input array form a file",
     arraySize :: w ::: Maybe Size
         <?> "Generated input array size",
+    randomSeed :: w ::: Maybe Seed
+        <?> "Seed the random number generator",
     nearlySorted :: w ::: Bool
         <?> "Generate an array that is already almost sorted",
     reverse :: w ::: Bool
@@ -83,7 +95,7 @@ optionModifiers = lispCaseModifiers { shortNameModifier = short }
     short "algorithm" = Just 'a'
     short "arraySize" = Just 's'
     short "output" = Just 'o'
-    short "reverse" = Just 'R'
+    short "randomSeed" = Just 'R'
     short "input" = Just 'i'
     short _ = Nothing
 

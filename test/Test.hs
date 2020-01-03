@@ -7,7 +7,6 @@ module Test(main) where
 
 import Sorter
 import SortAlgo
-import SortAlgo.Algo
 
 import qualified Data.List as L
 import           Data.String
