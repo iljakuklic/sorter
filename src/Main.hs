@@ -38,13 +38,11 @@ makeSorter opts = mainSorter
 
 -- Read an input file.
 readInput :: CL.File -> IO [Int]
-readInput (CL.File f) = fmap process (readFile f) >>= either fail return
+readInput (CL.File f) = either fail return =<< fmap process (readFile f)
   where
     process :: String -> Either String [Int]
-    process = sequence . fmap (readItem >=> validate) . words
-    readItem :: String -> Either String Int
+    process = sequence . fmap (validate <=< readItem) . words
     readItem = maybe (Left "Inputs must be integers") Right . readMaybe
-    validate :: Int -> Either String Int
     validate n | n > 0 = Right n
     validate _ = Left "Inputs must be strictly positive"
 
