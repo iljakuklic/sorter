@@ -45,7 +45,7 @@ instance ParseRecord Seed where
     parseRecord = fmap getOnly parseRecord
 
 -- List of available sorting algorithms.
-data Algorithm = Bubble | BubbleSimple | Quick | Select
+data Algorithm = Bubble | BubbleSimple | Heap | Quick | Select
     deriving (Show, Generic, Bounded, Enum)
 
 -- List of all algorithms and the corresponding string name.

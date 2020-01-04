@@ -3,6 +3,7 @@
 module SortAlgo(module SortAlgo.BubbleSort,
                 module SortAlgo.SelectSort,
                 module SortAlgo.QuickSort,
+                module SortAlgo.HeapSort,
                 module SortAlgo.SmallSort,
                 SortAlgo, OpenSortAlgo,
                 fix, ifSize, noSort, sortFocuser) where
@@ -11,6 +12,7 @@ import SortAlgo.Algo
 import SortAlgo.BubbleSort
 import SortAlgo.SelectSort
 import SortAlgo.QuickSort
+import SortAlgo.HeapSort
 import SortAlgo.SmallSort
 import Data.Function (fix)
 

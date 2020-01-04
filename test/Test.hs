@@ -18,14 +18,26 @@ import qualified Hedgehog.Gen as G
 
 -- Handful of custom generators.
 genInt = G.int (R.exponentialFrom 0 minBound maxBound)
+genList = G.list (R.linear 0 300) genInt
 
 -- Check a sorter against reference implementation `Data.List.sort`.
 checkSorter :: TestLimit -> SortAlgo -> Property
 checkSorter n sorter = withTests n . property $ do
-    xs <- forAll $ G.list (R.linear 0 300) genInt
+    xs <- forAll genList
     sortUsing sorter xs === L.sort xs
 
+-- Check a heapifier heapifies correctly.
+checkHeapifier :: TestLimit -> (Idx -> Idx -> Sorter ()) -> Property
+checkHeapifier n heapifier = withTests n . property $ do
+    xs <- forAll genList
+    let ys = sortUsing heapifier xs
+    annotateShow ys
+    assert $ and (zipWith (>=) (ys >>= \y -> [y, y]) (drop 1 ys))
+
+prop_heapify = checkHeapifier 500 heapify
+
 -- Define properties to test individual sorting algorithms.
+prop_heap = checkSorter 500 heapSort
 prop_select = checkSorter 500 (fix selectSort)
 prop_bubble = checkSorter 200 (fix bubbleSort)
 prop_bubblesimple = checkSorter 100 bubbleSortSimple

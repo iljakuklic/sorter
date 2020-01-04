@@ -30,6 +30,7 @@ library
                        SortAlgo.Algo,
                        SortAlgo.BubbleSort,
                        SortAlgo.SelectSort,
+                       SortAlgo.HeapSort,
                        SortAlgo.SmallSort,
                        SortAlgo.QuickSort
   build-depends:       base >= 4.7 && < 5,

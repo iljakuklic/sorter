@@ -27,6 +27,7 @@ makeSorter opts = mainSorter
     baseSorter = case CL.algorithm opts of
         CL.Bubble -> Open bubbleSort
         CL.BubbleSimple -> Closed bubbleSortSimple
+        CL.Heap -> Closed heapSort
         CL.Quick -> Open quickSort
         CL.Select -> Open selectSort
     stopSorter = ifSize (<= bubbleSize) noSort
