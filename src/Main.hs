@@ -10,11 +10,13 @@ import           System.Random
 import           Control.Monad
 import           Text.Read
 
+-- Some sorts are implemented as open sorts, some are closed.
+-- We collect any and all of them in ASort.
+data ASort = Open OpenSortAlgo | Closed SortAlgo
+
 -- Build a sorting procedure as specified by command line options.
 makeSorter :: CL.Options -> SortAlgo
-makeSorter opts beg end = do
-    fix mainSorter beg end
-    when (bubbleSize > 0) $ fix (sortFocuser . bubbleSort) beg end
+makeSorter opts = mainSorter
   where
     sizeOpt f = Idx (maybe 0 CL.getSize (f opts))
     selectSize = sizeOpt CL.selectSortUpto
@@ -23,11 +25,16 @@ makeSorter opts beg end = do
     smallSelectSorter = ifSize (<= selectSize) (fix selectSort)
     smallSorter = smallSpecSorter . smallSelectSorter
     baseSorter = case CL.algorithm opts of
-        CL.Select -> selectSort
-        CL.Bubble -> bubbleSort
-        CL.Quick -> quickSort
+        CL.Bubble -> Open bubbleSort
+        CL.BubbleSimple -> Closed bubbleSortSimple
+        CL.Quick -> Open quickSort
+        CL.Select -> Open selectSort
     stopSorter = ifSize (<= bubbleSize) noSort
-    mainSorter = stopSorter . sortFocuser . smallSorter . baseSorter
+    mainSorter = case baseSorter of
+        Open sorter -> \beg end -> do
+            fix (stopSorter . sortFocuser . smallSorter . sorter) beg end
+            when (bubbleSize > 0) $ fix (sortFocuser . bubbleSort) beg end
+        Closed sorter -> sorter
 
 -- Read an input file.
 readInput :: CL.File -> IO [Int]
