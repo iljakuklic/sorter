@@ -34,15 +34,14 @@ checkHeapifier n heapifier = withTests n . property $ do
     annotateShow ys
     assert $ and (zipWith (>=) (ys >>= \y -> [y, y]) (drop 1 ys))
 
-prop_heapify = checkHeapifier 500 heapify
-
 -- Define properties to test individual sorting algorithms.
-prop_heap = checkSorter 500 heapSort
 prop_select = checkSorter 500 (fix selectSort)
 prop_bubble = checkSorter 200 (fix bubbleSort)
 prop_bubblesimple = checkSorter 100 bubbleSortSimple
 prop_quick = checkSorter 500 (fix quickSort)
 prop_smallquick = checkSorter 500 (fix $ quickSort . smallSort)
+prop_heap = checkSorter 500 heapSort
+prop_heapify = checkHeapifier 500 heapify
 
 -- Special testing for small sorting networks.
 prop_small = withTests 10000 . property $ do
@@ -53,6 +52,15 @@ prop_small = withTests 10000 . property $ do
         return (l, xs)
     classify (fromString $ "sort" <> show l) True
     sortUsing (fix smallSort) xs === L.sort xs
+
+-- Test heap sort that does not start at index 0 by sorting an array prefix
+-- with select sort first.
+prop_selectheap = withTests 500 . property $ do
+    pfxSize <- forAll $ G.int (R.linear 1 50)
+    xs <- forAll genList
+    let threshold = Idx (length xs - pfxSize)
+    let sorter = fix (ifSize (<=threshold) heapSort . selectSort)
+    sortUsing sorter xs === L.sort xs
 
 -- Test range calculation.
 prop_rangesize = property $ do

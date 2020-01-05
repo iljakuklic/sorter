@@ -11,15 +11,16 @@ import Control.Monad
 import Data.Function (fix)
 
 -- Calculate parent, left child, right child index in the heap.
-leftIdx, rightIdx :: Idx -> Idx
-leftIdx i = i * 2 + 1
-rightIdx i = i * 2 + 2
+-- The begining index of the heap has to be passed too.
+leftIdx, rightIdx :: Idx -> Idx -> Idx
+leftIdx beg i = i * 2 - beg + 1
+rightIdx beg i = leftIdx beg i + 1
 
-siftDown :: Idx -> Idx -> Sorter ()
-siftDown root end = do
-    let lid = leftIdx root
-    let rid = rightIdx root
-    let continue next = swapAt root next >> siftDown next end
+siftDown :: Idx -> Idx -> Idx -> Sorter ()
+siftDown beg root end = do
+    let lid = leftIdx beg root
+    let rid = rightIdx beg root
+    let continue next = swapAt root next >> siftDown beg next end
     let cmp i = if i <= end then compareAt root i else return GT
     liftA2 (,) (cmp lid) (cmp rid) >>= \case
         (LT, LT) -> do
@@ -30,32 +31,26 @@ siftDown root end = do
         (_ , _ ) -> return ()
 
 -- | Turn an array into a max-heap.
---
--- This assumes the array starts at index 0.
 heapify :: SortAlgo
-heapify 0 end = do
-    let from = end `div` 2
-    forM_ [from,from-1..0] $ \i -> do
+heapify beg end = do
+    let from = (beg + end) `div` 2
+    forM_ [from,from-1..beg] $ \i -> do
         focusRange i end
-        siftDown i end
-heapify _ _ = error "heapify: array must start at 0"
+        siftDown beg i end
 
 -- | Heap sort
---
--- Array must start at index 0.
 heapSort :: SortAlgo
-heapSort 0 end | rangeSize 0 end < 4 = fix smallSort 0 end
-heapSort 0 end = do
-    heapify 0 end
-    swapAt 0 end
-    forM_ [end-1,end-2..3] $ \i -> do
-        focusRange 0 i
-        siftDown 0 i
-        swapAt 0 i
+heapSort beg end | rangeSize beg end < 4 = fix smallSort beg end
+heapSort beg end = do
+    heapify beg end
+    swapAt beg end
+    forM_ [end-1,end-2..(beg+3)] $ \i -> do
+        focusRange beg i
+        siftDown beg beg i
+        swapAt beg i
     -- Clean up the last three elements.
     -- We already know that the element at position 1 is greater than
     -- the element at position 0 because of how the heap was structured.
-    focusRange 0 2
-    void $ sort2 1 2
-    void $ sort2 0 1
-heapSort _ _ = error "heapSort: array must start at 0"
+    focusRange beg (beg+2)
+    void $ sort2 (beg+1) (beg+2)
+    void $ sort2 (beg+0) (beg+1)
